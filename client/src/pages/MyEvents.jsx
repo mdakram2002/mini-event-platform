@@ -6,7 +6,7 @@ import EventCard from '../components/EventCard';
 import Loader from '../components/Loader';
 import EventForm from '../components/EventForm';
 import toast from 'react-hot-toast';
-import { FiPlus, FiCalendar, FiUsers } from 'react-icons/fi';
+import { FiPlus, FiCalendar, FiUsers, FiX, FiSearch } from 'react-icons/fi';
 
 const MyEvents = () => {
     const { myEvents, attendingEvents, fetchMyEvents, fetchAttendingEvents, createEvent } = useEvents();
@@ -36,29 +36,31 @@ const MyEvents = () => {
             label: 'Events Created',
             value: myEvents.length,
             icon: FiCalendar,
-            color: 'text-blue-600',
-            bgColor: 'bg-blue-100'
+            color: 'text-blue-600 dark:text-blue-400',
+            bgColor: 'bg-blue-100 dark:bg-blue-900/30',
+            iconBg: 'bg-blue-500/10 dark:bg-blue-500/20'
         },
         {
             label: 'Events Attending',
             value: attendingEvents.length,
             icon: FiUsers,
-            color: 'text-green-600',
-            bgColor: 'bg-green-100'
+            color: 'text-green-600 dark:text-green-400',
+            bgColor: 'bg-green-100 dark:bg-green-900/30',
+            iconBg: 'bg-green-500/10 dark:bg-green-500/20'
         }
     ];
 
     return (
         <div className="space-y-8">
             {/* Header */}
-            <div className="flex flex-col md:flex-row justify-between items-start md:items-center space-y-4 md:space-y-0">
+            <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
                 <div>
-                    <h1 className="text-3xl font-bold text-gray-900">My Events</h1>
-                    <p className="text-gray-600 mt-2">Manage your events and RSVPs</p>
+                    <h1 className="text-3xl font-bold text-gray-900 dark:text-white">My Events</h1>
+                    <p className="text-gray-600 dark:text-gray-300 mt-2">Manage your events and RSVPs</p>
                 </div>
                 <button
                     onClick={() => setShowCreateForm(true)}
-                    className="btn-primary flex items-center space-x-2 px-6"
+                    className="bg-gradient-to-r from-primary-600 to-primary-700 hover:from-primary-700 hover:to-primary-800 dark:from-primary-700 dark:to-primary-800 dark:hover:from-primary-800 dark:hover:to-primary-900 text-white font-semibold py-3 px-6 rounded-lg transition-all duration-200 transform hover:-translate-y-0.5 hover:shadow-lg active:translate-y-0 flex items-center justify-center gap-2"
                 >
                     <FiPlus className="w-5 h-5" />
                     <span>Create Event</span>
@@ -66,18 +68,18 @@ const MyEvents = () => {
             </div>
 
             {/* Stats */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                 {stats.map((stat, index) => {
                     const Icon = stat.icon;
                     return (
-                        <div key={index} className="card">
-                            <div className="flex items-center space-x-4">
-                                <div className={`${stat.bgColor} p-3 rounded-lg`}>
-                                    <Icon className={`w-6 h-6 ${stat.color}`} />
-                                </div>
+                        <div key={index} className={`${stat.bgColor} rounded-xl p-6 shadow-sm border border-gray-200 dark:border-gray-700`}>
+                            <div className="flex items-center justify-between">
                                 <div>
-                                    <p className="text-2xl font-bold text-gray-900">{stat.value}</p>
-                                    <p className="text-gray-600">{stat.label}</p>
+                                    <p className="text-3xl font-bold text-gray-900 dark:text-white">{stat.value}</p>
+                                    <p className="text-gray-600 dark:text-gray-300 mt-1">{stat.label}</p>
+                                </div>
+                                <div className={`${stat.iconBg} p-3 rounded-full`}>
+                                    <Icon className={`w-8 h-8 ${stat.color}`} />
                                 </div>
                             </div>
                         </div>
@@ -87,18 +89,21 @@ const MyEvents = () => {
 
             {/* Create Event Form Modal */}
             {showCreateForm && (
-                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-                    <div className="bg-white rounded-xl shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto">
-                        <div className="p-6">
-                            <div className="flex justify-between items-center mb-6">
-                                <h2 className="text-2xl font-bold text-gray-900">Create New Event</h2>
-                                <button
-                                    onClick={() => setShowCreateForm(false)}
-                                    className="text-gray-400 hover:text-gray-600"
-                                >
-                                    ✕
-                                </button>
+                <div className="fixed inset-0 bg-black/50 dark:bg-black/70 backdrop-blur-sm flex items-center justify-center p-4 z-50">
+                    <div className="bg-white dark:bg-gray-900 rounded-2xl shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto border border-gray-200 dark:border-gray-800">
+                        <div className="sticky top-0 bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800 px-6 py-4 flex justify-between items-center">
+                            <div>
+                                <h2 className="text-2xl font-bold text-gray-900 dark:text-white">Create New Event</h2>
+                                <p className="text-gray-600 dark:text-gray-400 text-sm mt-1">Fill in the details below to create your event</p>
                             </div>
+                            <button
+                                onClick={() => setShowCreateForm(false)}
+                                className="p-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-full transition-colors"
+                            >
+                                <FiX className="w-6 h-6 text-gray-500 dark:text-gray-400" />
+                            </button>
+                        </div>
+                        <div className="p-6">
                             <EventForm
                                 onSubmit={handleCreateEvent}
                                 loading={loading}
@@ -109,25 +114,25 @@ const MyEvents = () => {
             )}
 
             {/* Tabs */}
-            <div className="border-b border-gray-200">
+            <div className="border-b border-gray-200 dark:border-gray-800">
                 <nav className="flex space-x-8">
                     <button
                         onClick={() => setActiveTab('created')}
-                        className={`py-4 px-1 border-b-2 font-medium text-sm ${activeTab === 'created'
-                                ? 'border-primary-500 text-primary-600'
-                                : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                        className={`py-4 px-1 border-b-2 font-medium text-sm transition-colors ${activeTab === 'created'
+                                ? 'border-primary-500 dark:border-primary-400 text-primary-600 dark:text-primary-400'
+                                : 'border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:border-gray-300 dark:hover:border-gray-600'
                             }`}
                     >
-                        Created Events
+                        Created Events ({myEvents.length})
                     </button>
                     <button
                         onClick={() => setActiveTab('attending')}
-                        className={`py-4 px-1 border-b-2 font-medium text-sm ${activeTab === 'attending'
-                                ? 'border-primary-500 text-primary-600'
-                                : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                        className={`py-4 px-1 border-b-2 font-medium text-sm transition-colors ${activeTab === 'attending'
+                                ? 'border-primary-500 dark:border-primary-400 text-primary-600 dark:text-primary-400'
+                                : 'border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:border-gray-300 dark:hover:border-gray-600'
                             }`}
                     >
-                        Attending Events
+                        Attending Events ({attendingEvents.length})
                     </button>
                 </nav>
             </div>
@@ -142,17 +147,17 @@ const MyEvents = () => {
                             ))}
                         </div>
                     ) : (
-                        <div className="text-center py-12">
-                            <div className="text-gray-400 mb-4">
+                        <div className="text-center py-16 bg-gray-50 dark:bg-gray-900/50 rounded-2xl border-2 border-dashed border-gray-300 dark:border-gray-700">
+                            <div className="text-gray-400 dark:text-gray-600 mb-6">
                                 <svg className="w-24 h-24 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                                 </svg>
                             </div>
-                            <h3 className="text-xl font-semibold text-gray-900 mb-2">No events created yet</h3>
-                            <p className="text-gray-600 mb-6">Create your first event and start inviting people!</p>
+                            <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-3">No events created yet</h3>
+                            <p className="text-gray-600 dark:text-gray-400 mb-8 max-w-md mx-auto">Create your first event and start inviting people to join exciting gatherings!</p>
                             <button
                                 onClick={() => setShowCreateForm(true)}
-                                className="btn-primary flex items-center space-x-2 mx-auto px-6"
+                                className="bg-gradient-to-r from-primary-600 to-primary-700 hover:from-primary-700 hover:to-primary-800 dark:from-primary-700 dark:to-primary-800 dark:hover:from-primary-800 dark:hover:to-primary-900 text-white font-semibold py-3 px-8 rounded-lg transition-all duration-200 transform hover:-translate-y-0.5 hover:shadow-lg active:translate-y-0 flex items-center justify-center gap-2 mx-auto"
                             >
                                 <FiPlus className="w-5 h-5" />
                                 <span>Create Your First Event</span>
@@ -167,18 +172,19 @@ const MyEvents = () => {
                             ))}
                         </div>
                     ) : (
-                        <div className="text-center py-12">
-                            <div className="text-gray-400 mb-4">
+                        <div className="text-center py-16 bg-gray-50 dark:bg-gray-900/50 rounded-2xl border-2 border-dashed border-gray-300 dark:border-gray-700">
+                            <div className="text-gray-400 dark:text-gray-600 mb-6">
                                 <svg className="w-24 h-24 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" />
                                 </svg>
                             </div>
-                            <h3 className="text-xl font-semibold text-gray-900 mb-2">Not attending any events yet</h3>
-                            <p className="text-gray-600 mb-6">Browse events and RSVP to join!</p>
+                            <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-3">Not attending any events yet</h3>
+                            <p className="text-gray-600 dark:text-gray-400 mb-8 max-w-md mx-auto">Browse upcoming events and RSVP to join interesting gatherings in your area!</p>
                             <Link
                                 to="/"
-                                className="btn-primary inline-flex items-center space-x-2 px-6"
+                                className="bg-gradient-to-r from-primary-600 to-primary-700 hover:from-primary-700 hover:to-primary-800 dark:from-primary-700 dark:to-primary-800 dark:hover:from-primary-800 dark:hover:to-primary-900 text-white font-semibold py-3 px-8 rounded-lg transition-all duration-200 transform hover:-translate-y-0.5 hover:shadow-lg active:translate-y-0 inline-flex items-center justify-center gap-2"
                             >
+                                <FiSearch className="w-5 h-5" />
                                 <span>Browse Events</span>
                             </Link>
                         </div>
