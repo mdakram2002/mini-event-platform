@@ -14,11 +14,31 @@ const connectDB = require('./config/db');
 const app = express();
 app.use(helmet());
 
-// CORS
-app.use(cors({
-  origin: process.env.FRONTEND_URL || 'http://localhost:3000',
-  credentials: true
-}));
+// CORS Configuration
+const corsOptions = {
+  origin: function (origin, callback) {
+    const allowedOrigins = (process.env.FRONTEND_URL || 'http://localhost:3000')
+      .split(',')
+      .map(url => url.trim());
+
+    if (!origin) {
+      return callback(null, true);
+    }
+
+    // Check if the requesting origin is in the allowed list
+    if (allowedOrigins.includes(origin) || allowedOrigins.includes('*')) {
+      callback(null, true);
+    } else {
+      console.log('CORS Blocked for origin:', origin);
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization']
+};
+
+app.use(cors(corsOptions));
 
 // Logging & Body parsing
 app.use(morgan('dev'));
@@ -88,6 +108,7 @@ const PORT = process.env.PORT || 5000;
 const server = app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
   console.log(`API URL: http://localhost:${PORT}`);
+  console.log(`Allowed CORS origins: ${process.env.FRONTEND_URL || 'http://localhost:3000'}`);
 });
 
 // Handle unhandled promise rejections
