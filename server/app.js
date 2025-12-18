@@ -17,28 +17,17 @@ app.use(helmet());
 // CORS Configuration
 const corsOptions = {
   origin: function (origin, callback) {
-    // DEBUG: Add these two lines first
-    console.log('Incoming origin:', origin);
-    console.log('FRONTEND_URL from env:', process.env.FRONTEND_URL);
-
     const allowedOrigins = (process.env.FRONTEND_URL || 'http://localhost:3000')
       .split(',')
       .map(url => url.trim());
 
-    console.log('Allowed origins array:', allowedOrigins);
-
-    // Allow requests with no origin (like server-to-server tools)
     if (!origin) {
-      console.log('No origin provided, allowing request');
       return callback(null, true);
     }
 
-    // Check if the requesting origin is in the allowed list
     if (allowedOrigins.includes(origin)) {
-      console.log('Origin allowed:', origin);
       callback(null, true);
     } else {
-      console.log('CORS Blocked for origin:', origin);
       callback(new Error('Not allowed by CORS'));
     }
   },
