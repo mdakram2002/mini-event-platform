@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { useEvents } from '../context/EventContext';
 import EventCard from '../components/EventCard';
 import Loader from '../components/Loader';
@@ -8,9 +8,13 @@ const Dashboard = () => {
     const { events, loading, fetchEvents } = useEvents();
     const [searchTerm, setSearchTerm] = useState('');
     const [filteredEvents, setFilteredEvents] = useState([]);
+    const hasFetchedRef = useRef(false);
 
     useEffect(() => {
-        fetchEvents();
+        if (!hasFetchedRef.current) {
+            fetchEvents();
+            hasFetchedRef.current = true;
+        }
     }, [fetchEvents]);
 
     useEffect(() => {
